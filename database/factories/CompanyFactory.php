@@ -19,7 +19,7 @@ class CompanyFactory extends Factory
         return [
             'name' => fake()->word(),
             'email' => fake()->unique()->safeEmail(),
-            'logo' => fake()->imageUrl($width = 640, $height = 480),
+            'logo' => fake()->image(storage_path('app/public'), 100, 100),
             'website' => fake()->domainName(),
         ];
     }
