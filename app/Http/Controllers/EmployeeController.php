@@ -4,82 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    function __construct()
+    {
+        JWTAuth::parseToken()->authenticate();
+    }
+    
     public function index()
     {
-        //
+        return response(Employee::paginate(10), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        return response(Employee::findOrFail($id), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        if (($error = Employee::createEmployee($request)) instanceof Response) {
+            return $error;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee added successfully'
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Employee $employee)
+    public function update(Request $request, $id)
     {
-        //
+        if (($error = Employee::updateEmployee($request, $id)) instanceof Response) {
+            return $error;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee updated successfully'
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Employee $employee)
+    public function destroy($id)
     {
-        //
-    }
+        if (($error = Employee::deleteEmployee($id)) instanceof Response) {
+            return $error;
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Employee $employee)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Employee $employee)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee deleted successfully'
+        ], 200);
     }
 }

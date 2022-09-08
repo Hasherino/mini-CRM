@@ -4,82 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CompanyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    function __construct()
+    {
+        JWTAuth::parseToken()->authenticate();
+    }
+
     public function index()
     {
-        //
+        return response(Company::paginate(10), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        return response(Company::findOrFail($id), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        if (($error = Company::createCompany($request)) instanceof Response) {
+            return $error;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company added successfully'
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Company $company)
+    public function update(Request $request, $id)
     {
-        //
+        if (($error = Company::updateCompany($request, $id)) instanceof Response) {
+            return $error;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company updated successfully'
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Company $company)
+    public function destroy($id)
     {
-        //
-    }
+        if (($error = Company::deleteCompany($id)) instanceof Response) {
+            return $error;
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Company $company)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Company $company)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'Company deleted successfully'
+        ], 200);
     }
 }
