@@ -6,6 +6,8 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Notification;
 
 class CompanyController extends Controller
 {
@@ -26,9 +28,11 @@ class CompanyController extends Controller
 
     public function create(Request $request)
     {
-        if (($error = Company::createCompany($request)) instanceof Response) {
-            return $error;
+        if (($company = Company::createCompany($request)) instanceof Response) {
+            return $company;
         }
+
+        Mail::to('admin@admin.com')->send(new Notification($company->name));
 
         return response()->json([
             'success' => true,

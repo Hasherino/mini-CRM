@@ -37,7 +37,10 @@ class Company extends Model
             $request->merge(['logo' => public_path().'\\storage\\'.ltrim($image_path, './')]);
         }
 
-        Company::create($request->all())->save();
+        $company = Company::create($request->all());
+        $company->save();
+
+        return $company;
     }
 
     public static function updateCompany($request, $id) {
