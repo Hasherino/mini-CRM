@@ -28,7 +28,9 @@ class Employee extends Model
             return response()->json(['error' => $validator->messages()], 400);
         }
 
-        Employee::create($request->all())->save();
+        $employee = Employee::create($request->all())->save();
+
+        return $employee;
     }
 
     public static function updateEmployee($request, $id) {
@@ -45,6 +47,8 @@ class Employee extends Model
 
         $employee = Employee::findOrFail($id);
         $employee->fill($request->all())->save();
+
+        return $employee;
     }
 
     public static function deleteEmployee($id) {
