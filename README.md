@@ -23,4 +23,4 @@
 ### How to authenticate
 
 - Use the `POST api/auth/login` route with admin credentials, to get a token.
-- Attatch the token to every request you send
+- Attatch the token to every request you send (You can find all possible routes in the Postman collection file found in the root directory)
